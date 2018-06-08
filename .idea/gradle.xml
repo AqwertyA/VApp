@@ -8,9 +8,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/jpushtest" />
             <option value="$PROJECT_DIR$/minesweeper" />
+            <option value="$PROJECT_DIR$/pwdManager" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
