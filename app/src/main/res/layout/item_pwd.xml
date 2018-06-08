@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="java.util.Base64"/>
+
+        <variable
+            name="model"
+            type="com.v.vapp.viewModel.PwdItemModel"/>
+    </data>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:background="@drawable/pwd_item_bkg"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{@string/platformFormat(model.item.platform)}"
+            tools:text="platform-->QQ"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@{@string/platformFormat(model.item.accountName)}"
+            tools:text="accountName-->123456798"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@{@string/platformFormat(model.item.pwd)}"
+            tools:text="pwd-->qwerty123456"/>
+
+    </LinearLayout>
+</layout>
