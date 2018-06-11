@@ -1,12 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:bind="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
 
-    <com.v.minesweeper.MineView
-        android:id="@+id/mine_view"
+    <data>
+
+        <variable
+            name="model"
+            type="com.v.minesweeper.framework.viewmodel.MineModel"/>
+    </data>
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent">
 
-</android.support.constraint.ConstraintLayout>
+        <com.v.minesweeper.widget.MineView
+            android:id="@+id/mine_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            bind:state="@{model.state}"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            bind:layout_constraintTop_toBottomOf="@id/mine_view">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@{@string/searchState(model.getSearchState(model.state))}"
+                tools:text="searchMode: Find"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->model.changeState()}"
+                android:text="@string/change_mode"/>
+
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

@@ -1,4 +1,4 @@
-package com.v.minesweeper
+package com.v.minesweeper.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
+import com.v.minesweeper.R
 import com.v.minesweeper.constant.*
 import java.util.*
 import kotlin.collections.HashMap
@@ -28,8 +29,12 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
     private var searchMap = HashMap<Int, Int>()//地雷搜索状态
     private var clickX: Int = -1//当前点击的X坐标
     private var clickY: Int = -1//当前点击的Y坐标
-    private var state: Int = -1//当前
+    var state: Int = -1//当前
+        set(value) {
+            field = if (value in arrayOf(STATE_MARK, STATE_SEARCH)) value else -1
+        }
     private var searchedArea = 0
+    private var playing = false
 
     private val random = Random()
     private val mPaint = Paint()
@@ -50,7 +55,9 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
         minePaint.textSize = context.resources.getDimensionPixelOffset(R.dimen.mine_text_size).toFloat()
     }
 
-    fun init(width: Int, height: Int, mineNum: Int) {
+    fun play(width: Int, height: Int, mineNum: Int) {
+        playing = true
+
         _width = width
         _height = height
         this.mineNum = mineNum
@@ -87,6 +94,7 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
             canvas.drawText("in edit mode!", (width / 2).toFloat(), (height / 2).toFloat(), mPaint)
             return
         }
+        if (_height == 0 || _width == 0) return
 
         _itemSize = if (measuredWidth.toFloat() / measuredHeight > _width.toFloat() / _height)
             measuredHeight / _height else measuredWidth / _width
@@ -145,17 +153,18 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         val result = super.onTouchEvent(event)
-        when (event?.action) {
-            MotionEvent.ACTION_DOWN -> {
-                markIndex(event)
-                return true
+        if (playing)
+            when (event?.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    markIndex(event)
+                    return true
+                }
+                MotionEvent.ACTION_UP -> {
+                    checkClick()
+                    clearIndex()
+                    return true
+                }
             }
-            MotionEvent.ACTION_UP -> {
-                checkClick()
-                clearIndex()
-                return true
-            }
-        }
         return result
     }
 
@@ -178,7 +187,7 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
         when (state) {
             STATE_MARK -> {
                 when (searchMap[index]) {
-                    MINE_STATE_DEFAULT -> {
+                    MINE_STATE_DEFAULT, null -> {
                         searchMap[index] = MINE_STATE_FLAG_MINE
                         postInvalidate()
                     }
@@ -270,7 +279,8 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
 
     private fun gameOver(win: Boolean) {
         Toast.makeText(context, "游戏结束，你${if (win) "赢" else "输"}了", Toast.LENGTH_LONG).show()
-        state = -1 //state置为-1表示不能对View进行操作
+
+        playing = false
     }
 
     private fun xy2Index(x: Int, y: Int): Int? = if (checkBoundsIn(x, y)) (x + y * _width) else null

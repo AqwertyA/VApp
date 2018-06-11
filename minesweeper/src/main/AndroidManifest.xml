@@ -3,6 +3,7 @@
           package="com.v.minesweeper">
 
     <application
+        android:name=".global.MApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -10,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.v.minesweeper.framework.activity.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -19,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MineActivity"
+            android:name="com.v.minesweeper.framework.activity.MineActivity"
             android:screenOrientation="portrait"/>
     </application>
 

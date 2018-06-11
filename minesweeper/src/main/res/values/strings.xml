@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MineSweeper</string>
+    <string name="searchState">searchState: %s</string>
+    <string name="change_mode">changeMode</string>
 </resources>
