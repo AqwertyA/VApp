@@ -1,1 +1,1 @@
-include ':pwdManager', ':jpushtest', ':jpushtest', ':minesweeper'
+include ':pwdManager', ':jpushtest', ':jpushtest', ':minesweeper', ':xposedtest'

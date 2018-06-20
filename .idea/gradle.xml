@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/jpushtest" />
             <option value="$PROJECT_DIR$/minesweeper" />
             <option value="$PROJECT_DIR$/pwdManager" />
+            <option value="$PROJECT_DIR$/xposedtest" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
