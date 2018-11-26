@@ -1,1 +1,1 @@
-include ':pwdManager', ':jpushtest', ':jpushtest', ':minesweeper', ':xposedtest', ':getdeviceinfo', ':animtest', ':room'
+include ':pwdManager', ':jpushtest', ':minesweeper', ':xposedtest', ':getdeviceinfo', ':animtest', ':room'
