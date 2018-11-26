@@ -8,9 +8,12 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/animtest" />
+            <option value="$PROJECT_DIR$/getdeviceinfo" />
             <option value="$PROJECT_DIR$/jpushtest" />
             <option value="$PROJECT_DIR$/minesweeper" />
             <option value="$PROJECT_DIR$/pwdManager" />
+            <option value="$PROJECT_DIR$/room" />
             <option value="$PROJECT_DIR$/xposedtest" />
           </set>
         </option>

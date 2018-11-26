@@ -3,9 +3,12 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/VApp.iml" filepath="$PROJECT_DIR$/VApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/animtest/animtest.iml" filepath="$PROJECT_DIR$/animtest/animtest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/getdeviceinfo/getdeviceinfo.iml" filepath="$PROJECT_DIR$/getdeviceinfo/getdeviceinfo.iml" />
       <module fileurl="file://$PROJECT_DIR$/jpushtest/jpushtest.iml" filepath="$PROJECT_DIR$/jpushtest/jpushtest.iml" />
       <module fileurl="file://$PROJECT_DIR$/minesweeper/minesweeper.iml" filepath="$PROJECT_DIR$/minesweeper/minesweeper.iml" />
       <module fileurl="file://$PROJECT_DIR$/pwdManager/pwdManager.iml" filepath="$PROJECT_DIR$/pwdManager/pwdManager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/room/room.iml" filepath="$PROJECT_DIR$/room/room.iml" />
       <module fileurl="file://$PROJECT_DIR$/xposedtest/xposedtest.iml" filepath="$PROJECT_DIR$/xposedtest/xposedtest.iml" />
     </modules>
   </component>
