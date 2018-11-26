@@ -91,7 +91,7 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
 
     override fun onDraw(canvas: Canvas) {
         if (isInEditMode) {
-            canvas.drawText("in edit mode!", (width / 2).toFloat(), (height / 2).toFloat(), mPaint)
+            canvas.drawText("in edit mode!", 0f, (height / 2).toFloat(), mPaint)
             return
         }
         if (_height == 0 || _width == 0) return

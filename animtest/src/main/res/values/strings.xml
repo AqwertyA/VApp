@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">AnimTest</string>
+
+    <string name="scaleX">scaleX: %s</string>
+    <string name="scaleY">scaleY: %s</string>
+    <string name="rotateX">rotateX: %d</string>
+    <string name="rotateY">rotateY: %d</string>
+    <string name="rotateZ">rotate(Z): %d</string>
+    <string name="color">color</string>
+</resources>

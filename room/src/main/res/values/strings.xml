@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">room</string>
+    <string name="action_settings">Settings</string>
+    <string name="refresh">refresh</string>
+    <string name="uid">uid</string>
+    <string name="userName">userName</string>
+    <string name="gender">gender(f or m)</string>
+    <string name="execute">execute</string>
+    <string name="idFormat">id: %d</string>
+    <string name="nameFormat">userName: %s</string>
+    <string name="genderFormat">gender: %s</string>
+</resources>
