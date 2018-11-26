@@ -1,5 +1,6 @@
 package com.v.minesweeper.framework.viewmodel
 
+import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableInt
 import com.v.minesweeper.constant.STATE_MARK
 import com.v.minesweeper.constant.STATE_SEARCH
@@ -8,7 +9,7 @@ import com.v.minesweeper.constant.STATE_SEARCH
  * @author V
  * @since 2018/6/11
  */
-class MineModel {
+class MineModel : ViewModel() {
     val state: ObservableInt = ObservableInt(STATE_SEARCH)
 
     fun changeState() {

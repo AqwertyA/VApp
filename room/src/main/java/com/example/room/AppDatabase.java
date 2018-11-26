@@ -8,7 +8,7 @@ import android.arch.persistence.room.RoomDatabase;
  * @since 2018/10/22
  */
 
-@Database(entities = {User.class}, version = 1)
+@Database(entities = {User.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public static final String DATABASE_NAME = "testDatabase";
 

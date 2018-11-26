@@ -2,6 +2,7 @@ package com.example.room;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 /**
@@ -25,6 +26,7 @@ public class User {
     public User() {
     }
 
+    @Ignore
     public User(int uid, String userName, int gender) {
         this.uid = uid;
         this.userName = userName;
