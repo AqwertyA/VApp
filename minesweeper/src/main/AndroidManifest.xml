@@ -24,6 +24,7 @@
         <activity
             android:name="com.v.minesweeper.framework.activity.MineActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".framework.activity.SettingsActivity" />
     </application>
 
 </manifest>

@@ -10,24 +10,40 @@
             type="com.v.minesweeper.framework.viewmodel.MineModel" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <com.v.minesweeper.widget.MineView
-            android:id="@+id/mine_view"
+        <ScrollView
+            android:id="@+id/mine_view_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            bind:state="@{model.state}" />
+            android:layout_height="match_parent"
+            android:layout_above="@id/layout_functions"
+            tools:ignore="NestedScrolling">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.v.minesweeper.widget.MineView
+                    android:id="@+id/mine_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    bind:state="@{model.state}" />
+
+            </HorizontalScrollView>
+        </ScrollView>
 
         <LinearLayout
+            android:id="@+id/layout_functions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            bind:layout_constraintTop_toBottomOf="@id/mine_view">
+            android:paddingRight="15dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -42,7 +58,13 @@
                 android:onClick="@{()->model.changeState()}"
                 android:text="@string/change_mode" />
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="play"
+                android:text="@string/play" />
+
         </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </RelativeLayout>
 </layout>

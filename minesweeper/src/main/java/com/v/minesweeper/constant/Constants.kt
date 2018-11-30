@@ -24,3 +24,8 @@ const val MINE_STATE_NUM_8 = 8
 /**搜索状态*/
 const val STATE_SEARCH = 0//搜索状态
 const val STATE_MARK = 1//标记状态
+
+/**获取设置preference的key*/
+const val PREF_KEY_SETTINGS = "settings"
+/**传递难度的model的Key*/
+const val PREF_KEY_SETTINGS_LV = "settings_lv"

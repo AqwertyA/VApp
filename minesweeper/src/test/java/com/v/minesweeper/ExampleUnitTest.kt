@@ -1,8 +1,6 @@
 package com.v.minesweeper
 
 import org.junit.Test
-
-import org.junit.Assert.*
 import java.util.*
 
 /**
@@ -37,6 +35,15 @@ class ExampleUnitTest {
     @Test
     fun arrayTest() {
         var array = emptyList<Int>()
+    }
+
+    @Test
+    fun charTest() {
+        for (i in 0..10000) {
+            val c: Char = i.toChar()
+            print(c)
+            if (i % 100 == 0) println()
+        }
     }
 
     private inline fun a(s: String, f: (String) -> Int): Int = f(s)

@@ -13,7 +13,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun startGame(v: View) {
         startActivity(Intent(this, MineActivity::class.java))
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun settings(v: View) {
+        startActivity(Intent(this, SettingsActivity::class.java))
     }
 }

@@ -29,7 +29,8 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
     private var searchMap = HashMap<Int, Int>()//地雷搜索状态
     private var clickX: Int = -1//当前点击的X坐标
     private var clickY: Int = -1//当前点击的Y坐标
-    var state: Int = -1//当前
+    var state: Int = -1
+        //当前
         set(value) {
             field = if (value in arrayOf(STATE_MARK, STATE_SEARCH)) value else -1
         }
@@ -40,6 +41,7 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
     private val mPaint = Paint()
     private val dividerPaint = Paint()
     private val minePaint = Paint()
+    private val clickPaint = Paint()
 
     init {
         mPaint.textSize = 100f
@@ -53,6 +55,12 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
         minePaint.color = Color.BLUE
         minePaint.style = Paint.Style.FILL
         minePaint.textSize = context.resources.getDimensionPixelOffset(R.dimen.mine_text_size).toFloat()
+
+        clickPaint.isAntiAlias = true
+        clickPaint.color = 0x80000000.toInt()
+        clickPaint.style = Paint.Style.FILL
+
+        _itemSize = context.resources.getDimensionPixelSize(R.dimen.mine_item_size)
     }
 
     fun play(width: Int, height: Int, mineNum: Int) {
@@ -82,10 +90,12 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var width = getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
-        var height = getDefaultSize(suggestedMinimumHeight, heightMeasureSpec)
+//        var width = getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
+//        _itemSize = (width - paddingLeft - paddingRight) / _width
 
-        if (width > height) width = height else height = width
+        val width = _itemSize * _width + paddingLeft + paddingRight
+        val height = _itemSize * _height + paddingTop + paddingBottom
+
         setMeasuredDimension(width, height)
     }
 
@@ -96,26 +106,25 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
         }
         if (_height == 0 || _width == 0) return
 
-        _itemSize = if (measuredWidth.toFloat() / measuredHeight > _width.toFloat() / _height)
-            measuredHeight / _height else measuredWidth / _width
-
+        canvas.translate(paddingLeft.toFloat(), paddingTop.toFloat())
         drawGrid(canvas)
         drawMines(canvas)
+        drawClickEffect(canvas)
     }
 
     private fun drawGrid(canvas: Canvas) {
-        //画横线
+        //画竖线
         canvas.save()
         for (i in 0.._width) {
-            canvas.drawLine(0f, 0f, 0f, measuredHeight.toFloat(), dividerPaint)
+            canvas.drawLine(0f, 0f, 0f, _itemSize.toFloat() * _height, dividerPaint)
             canvas.translate(_itemSize.toFloat(), 0f)
         }
         canvas.restore()
 
-        //画竖线
+        //画横线
         canvas.save()
         for (i in 0.._height) {
-            canvas.drawLine(0f, 0f, measuredWidth.toFloat(), 0f, dividerPaint)
+            canvas.drawLine(0f, 0f, _itemSize.toFloat() * _width, 0f, dividerPaint)
             canvas.translate(0f, _itemSize.toFloat())
         }
         canvas.restore()
@@ -150,21 +159,39 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
             }
     }
 
+    /**点击效果绘制 */
+    private fun drawClickEffect(canvas: Canvas) {
+        if (clickX < 0 || clickX > _width - 1 || clickY < 0 || clickY > _height - 1) return
+        canvas.save()
+
+        canvas.translate((_itemSize * clickX).toFloat(), (_itemSize * clickY).toFloat())
+        canvas.drawRect(0f, 0f, _itemSize.toFloat(), _itemSize.toFloat(), clickPaint)
+
+        canvas.restore()
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         val result = super.onTouchEvent(event)
-        if (playing)
+        if (playing) {
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
                     markIndex(event)
+                    postInvalidate()
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
                     checkClick()
                     clearIndex()
+                    postInvalidate()
                     return true
                 }
+                MotionEvent.ACTION_CANCEL -> {
+                    clearIndex()
+                    postInvalidate()
+                }
             }
+        }
         return result
     }
 
@@ -189,15 +216,12 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
                 when (searchMap[index]) {
                     MINE_STATE_DEFAULT, null -> {
                         searchMap[index] = MINE_STATE_FLAG_MINE
-                        postInvalidate()
                     }
                     MINE_STATE_FLAG_MINE -> {
                         searchMap[index] = MINE_STATE_FLAG_UNKNOWN
-                        postInvalidate()
                     }
                     MINE_STATE_FLAG_UNKNOWN -> {
                         searchMap[index] = MINE_STATE_DEFAULT
-                        postInvalidate()
                     }
                     else -> {
                         return
@@ -208,7 +232,6 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
                 when (searchMap[index]) {
                     MINE_STATE_FLAG_UNKNOWN, MINE_STATE_DEFAULT, null -> {
                         checkMine(clickX, clickY, index)
-                        postInvalidate()
                     }
                     else -> {
                         return
