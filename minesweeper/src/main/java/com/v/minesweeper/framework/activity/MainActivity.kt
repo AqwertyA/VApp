@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.v.minesweeper.R
 
+/**
+ * 游戏主界面
+ */
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -16,6 +16,7 @@ import com.v.minesweeper.databinding.ActivityMineBinding
 import com.v.minesweeper.framework.viewmodel.MineModel
 
 /**
+ * 游戏界面
  * @author V
  * @since 2018/11/26
  */
@@ -26,6 +27,8 @@ class MineActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_mine)
+
+        //获取通过json数据保存的难度
         val preferences = getSharedPreferences(PREF_KEY_SETTINGS, Context.MODE_PRIVATE)
         val lvString = preferences.getString(PREF_KEY_SETTINGS_LV, null)
         level = if (lvString == null) Level(Difficulty.EASY) else Gson().fromJson(lvString, Level::class.java)

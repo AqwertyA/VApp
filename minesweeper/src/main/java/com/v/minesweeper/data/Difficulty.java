@@ -1,6 +1,8 @@
 package com.v.minesweeper.data;
 
 /**
+ * 难度定义
+ *
  * @author V
  * @since 2018/11/29
  */

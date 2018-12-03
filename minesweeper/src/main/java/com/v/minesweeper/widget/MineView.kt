@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
@@ -63,6 +64,9 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
         _itemSize = context.resources.getDimensionPixelSize(R.dimen.mine_item_size)
     }
 
+    /**
+     * 调用该方法初始化一局游戏
+     */
     fun play(width: Int, height: Int, mineNum: Int) {
         playing = true
 
@@ -76,6 +80,8 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
         searchedArea = 0
         searchMap.clear()
         minePositions.clear()
+        //随机生成雷
+        var errorCount = 0
         for (i in 0 until mineNum) {
             var mine = random.nextInt(_width * _height)
             var tryCount = 0
@@ -83,16 +89,20 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
                 mine = random.nextInt(_width * _height)
                 tryCount++
             }
+            if (tryCount >= 10) {//如果尝试10次还不能找到没有重复的雷的位置，标记一次错误的尝试
+                errorCount++
+            }
             minePositions.add(mine)
         }
+        if (errorCount > 0) {
+            Log.w("MineView", "warn: mine generate error for $errorCount times")
+        }
 
-        postInvalidate()
+        postInvalidate()//所有数据生成好之后刷新
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-//        var width = getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
-//        _itemSize = (width - paddingLeft - paddingRight) / _width
-
+        //根据每个格子大小计算宽高
         val width = _itemSize * _width + paddingLeft + paddingRight
         val height = _itemSize * _height + paddingTop + paddingBottom
 
@@ -135,7 +145,7 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
             for (y in 0 until _height) {
                 val index = x + y * _width
                 var text: String?
-                when (searchMap[index]) {
+                when (searchMap[index]) {//根据不同情况绘制出文字
                     MINE_STATE_NUM_0 -> text = "0"
                     MINE_STATE_NUM_1 -> text = "1"
                     MINE_STATE_NUM_2 -> text = "2"
@@ -152,6 +162,7 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
                     else -> text = null
                 }
                 text?.let {
+                    //计算文字的位置和绘制文字
                     val dx = (_itemSize * x).toFloat() + ((_itemSize - minePaint.measureText(text)) / 2)
                     val dy = (_itemSize * (y + 1)).toFloat() - ((_itemSize - minePaint.textSize) / 2)
                     canvas.drawText(text, dx, dy, minePaint)
@@ -159,7 +170,10 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
             }
     }
 
-    /**点击效果绘制 */
+    /**
+     * 点击效果绘制
+     * 显示一个灰色遮罩
+     */
     private fun drawClickEffect(canvas: Canvas) {
         if (clickX < 0 || clickX > _width - 1 || clickY < 0 || clickY > _height - 1) return
         canvas.save()
@@ -176,17 +190,20 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
         if (playing) {
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    //按下时记录index，并刷新（因为需要绘制点击效果）
                     markIndex(event)
                     postInvalidate()
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
+                    //放手时计算点击并清空点击的index
                     checkClick()
                     clearIndex()
                     postInvalidate()
                     return true
                 }
                 MotionEvent.ACTION_CANCEL -> {
+                    //取消点击时清空点击的index
                     clearIndex()
                     postInvalidate()
                 }
@@ -195,16 +212,25 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
         return result
     }
 
+    /**
+     * 根据xy坐标位置计算Index
+     */
     private fun markIndex(event: MotionEvent) {
         clickX = (event.x / _itemSize).toInt()
         clickY = (event.y / _itemSize).toInt()
     }
 
+    /**
+     * 清掉index
+     */
     private fun clearIndex() {
         clickX = -1
         clickY = -1
     }
 
+    /**
+     * 根据已经记录好的xy点击坐标执行相关逻辑
+     */
     private fun checkClick() {
         if (!checkBoundsIn(clickX, clickY)) {
             return
@@ -212,7 +238,7 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
 
         val index = clickX + clickY * _width
         when (state) {
-            STATE_MARK -> {
+            STATE_MARK -> {//标记模式逻辑
                 when (searchMap[index]) {
                     MINE_STATE_DEFAULT, null -> {
                         searchMap[index] = MINE_STATE_FLAG_MINE
@@ -228,7 +254,7 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
                     }
                 }
             }
-            STATE_SEARCH -> {
+            STATE_SEARCH -> {//搜索模式逻辑
                 when (searchMap[index]) {
                     MINE_STATE_FLAG_UNKNOWN, MINE_STATE_DEFAULT, null -> {
                         checkMine(clickX, clickY, index)
@@ -242,6 +268,9 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
 
     }
 
+    /**
+     * 检测目标位置的雷的分布情况
+     */
     private fun checkMine(clickX: Int, clickY: Int, index: Int) {
         if (minePositions.contains(index)) {
             showMines()
@@ -258,7 +287,7 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
             searchMap[index] = mineCount
             searchedArea++
             if (!checkGameOver())
-                if (mineCount == 0) {
+                if (mineCount == 0) {//如果目标位置的雷数为0则需要用递归扩散检查所有边界
                     for (i in around) {
                         i?.let {
                             if (checkBoundsIn(clickX, clickY) && searchMap[it] in arrayOf(MINE_STATE_FLAG_UNKNOWN, MINE_STATE_DEFAULT, null)) {
@@ -272,6 +301,9 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
 
     }
 
+    /**
+     * 检测游戏是否已经结束
+     */
     private fun checkGameOver(): Boolean {
         if (searchedArea + mineNum == _width * _height) {
             gameOver(true)
@@ -280,6 +312,9 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
         return false
     }
 
+    /**
+     * 获取一个xy坐标位置周围的8个位置的index
+     */
     private fun getAround(clickX: Int, clickY: Int): Array<Int?> {
         return arrayOf(
                 xy2Index(clickX - 1, clickY - 1),    //left top

@@ -8,15 +8,16 @@ import com.v.minesweeper.data.Difficulty
 import com.v.minesweeper.data.Level
 
 /**
+ * 设置页面模型
  * @author V
  * @since 2018/11/29
  */
 class SettingsModel : ViewModel() {
 
-    var w = ObservableField<String>()
-    var h = ObservableField<String>()
-    var n = ObservableField<String>()
-    var difficulty = ObservableInt()
+    var w = ObservableField<String>()//宽
+    var h = ObservableField<String>()//高
+    var n = ObservableField<String>()//雷数
+    var difficulty = ObservableInt()//难度
 
     fun generateModel(): Level {
         return if (difficulty.get() == Difficulty.CUSTOM)

@@ -4,12 +4,13 @@ import com.google.gson.Gson
 import java.io.Serializable
 
 /**
+ * 难度类
  * @author V
  * @since 2018/11/29
  */
 class Level : Serializable {
 
-    var level: Int = Difficulty.EASY
+    var level: Int = Difficulty.EASY//默认是简单难度
     var w: Int = 10
     var h: Int = 10
     var n: Int = 10
