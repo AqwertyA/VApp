@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.google.gson.Gson
@@ -39,7 +40,15 @@ class MineActivity : AppCompatActivity() {
 
     @Suppress("UNUSED_PARAMETER")
     fun play(v: View) {
-        play()
+        if (binding.mineView.playing) {
+            AlertDialog.Builder(this)
+                    .setMessage("you are current playing a game, are you sure to start another one?")
+                    .setPositiveButton("YES") { _, _ -> play() }
+                    .setNegativeButton("NO") { dialog, _ -> dialog.dismiss() }
+                    .show()
+        } else {
+            play()
+        }
     }
 
     private fun play() {

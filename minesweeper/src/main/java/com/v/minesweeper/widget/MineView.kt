@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.support.annotation.ColorInt
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
@@ -36,7 +37,7 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
             field = if (value in arrayOf(STATE_MARK, STATE_SEARCH)) value else -1
         }
     private var searchedArea = 0
-    private var playing = false
+    var playing = false
 
     private val random = Random()
     private val mPaint = Paint()
@@ -53,7 +54,6 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
         dividerPaint.strokeWidth = context.resources.getDimensionPixelOffset(R.dimen.stroke_width).toFloat()
 
         minePaint.isAntiAlias = true
-        minePaint.color = Color.BLUE
         minePaint.style = Paint.Style.FILL
         minePaint.textSize = context.resources.getDimensionPixelOffset(R.dimen.mine_text_size).toFloat()
 
@@ -144,30 +144,62 @@ class MineView @JvmOverloads constructor(context: Context, attrs: AttributeSet?,
         for (x in 0 until _width)
             for (y in 0 until _height) {
                 val index = x + y * _width
-                var text: String?
                 when (searchMap[index]) {//根据不同情况绘制出文字
-                    MINE_STATE_NUM_0 -> text = "0"
-                    MINE_STATE_NUM_1 -> text = "1"
-                    MINE_STATE_NUM_2 -> text = "2"
-                    MINE_STATE_NUM_3 -> text = "3"
-                    MINE_STATE_NUM_4 -> text = "4"
-                    MINE_STATE_NUM_5 -> text = "5"
-                    MINE_STATE_NUM_6 -> text = "6"
-                    MINE_STATE_NUM_7 -> text = "7"
-                    MINE_STATE_NUM_8 -> text = "8"
-                    MINE_STATE_FLAG_UNKNOWN -> text = "?"
-                    MINE_STATE_FLAG_MINE -> text = "F"
-                    MINE_STATE_REAL_MINE -> text = "M"
-                    MINE_STATE_DEFAULT, null -> text = null
-                    else -> text = null
-                }
-                text?.let {
-                    //计算文字的位置和绘制文字
-                    val dx = (_itemSize * x).toFloat() + ((_itemSize - minePaint.measureText(text)) / 2)
-                    val dy = (_itemSize * (y + 1)).toFloat() - ((_itemSize - minePaint.textSize) / 2)
-                    canvas.drawText(text, dx, dy, minePaint)
+                    MINE_STATE_NUM_1,
+                    MINE_STATE_NUM_2,
+                    MINE_STATE_NUM_3,
+                    MINE_STATE_NUM_4,
+                    MINE_STATE_NUM_5,
+                    MINE_STATE_NUM_6,
+                    MINE_STATE_NUM_7,
+                    MINE_STATE_NUM_8,
+                    MINE_STATE_FLAG_MINE,
+                    MINE_STATE_FLAG_UNKNOWN,
+                    MINE_STATE_REAL_MINE
+                    -> {
+                        val n = searchMap[index]
+                        minePaint.color = getNumColor(n!!)
+                        val text = if (n in MINE_STATE_NUM_1..MINE_STATE_NUM_8) n.toString() else when (n) {MINE_STATE_FLAG_MINE -> "F"
+                            MINE_STATE_FLAG_UNKNOWN -> "?"
+                            MINE_STATE_REAL_MINE -> "M"
+                            else -> ""
+                        }
+                        //计算文字的位置和绘制文字
+                        val dx = (_itemSize * x).toFloat() + ((_itemSize - minePaint.measureText(text)) / 2)
+                        val dy = (_itemSize * (y + 1)).toFloat() - ((_itemSize - minePaint.textSize) / 2)
+                        canvas.drawText(text, dx, dy, minePaint)
+                    }
+                    MINE_STATE_NUM_0 -> {
+                        val dx = x * _itemSize.toFloat()
+                        val dy = y * _itemSize.toFloat()
+                        minePaint.color = getNumColor(0)
+                        canvas.drawRect(dx, dy, dx + _itemSize, dy + _itemSize, minePaint)
+                    }
+                    MINE_STATE_DEFAULT, null -> {
+                    }
+                    else -> {
+                    }
                 }
             }
+    }
+
+    @ColorInt
+    private fun getNumColor(num: Int): Int {
+        return when (num) {
+            0 -> Color.GRAY
+            1 -> 0xff0080ff.toInt()
+            2 -> 0xff00a000.toInt()
+            3 -> Color.RED
+            4 -> 0xff0000a0.toInt()
+            5 -> 0xff800000.toInt()
+            6 -> 0xff00a0a0.toInt()
+            7 -> Color.BLACK
+            8 -> Color.GRAY
+            MINE_STATE_FLAG_UNKNOWN -> Color.BLUE
+            MINE_STATE_FLAG_MINE -> Color.RED
+            MINE_STATE_REAL_MINE -> Color.BLACK
+            else -> Color.BLACK
+        }
     }
 
     /**
